@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Metaverse Thought Puppet</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- p5.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.js"></script>
+</head>
+<body class="m-4">
+  <!-- <nav class="navbar navbar-dark fixed-top bg-dark">
+    <div class="container-fluid justify-content-end gap-2" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <button id="downloadButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">D</button>
+        </li>
+        <li class="nav-item">
+          <button id="settingsButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">S</button>
+        </li>
+        <li class="nav-item">
+          <button id="homepageButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">H</button>
+        </li>
+      </ul>
+    </div>
+  </nav> -->
+
+  <header class="stage-header">
+    <h1>Puppet Stage</h1>
+  </header>
+
+  <main role="main" class="container-fluid p-0">
+    <!-- Expect the p5 canvas to go here -->
+
+    <!-- Thought Form -->
+    <form id="thoughtForm" class="thoughtForm">
+      <!-- Thought Input Text Field -->
+      <div class="form-group">
+        <!-- <label for="thoughtInput">Enter thought: </label> -->
+        <input 
+          type="text" 
+          id="thoughtInput" 
+          class="form-control" 
+          aria-describedby="thoughtInput" 
+          placeholder="Enter thought">
+      </div>
+      <!-- Submit Thought Button -->
+      <button type="submit" id="submitThoughtButton" class="btn btn-danger">></button>
+    </form>
+  </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+  <!-- Socket Library -->
+  <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+  <!-- Custom JS -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Navigation buttons */
+.button-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+}
+
+/* p5 canvas */
+canvas {
+  position: fixed;
+  z-index: -10;
+  display: block;
+  top: 0;
+  left: 0;
+}
+
+/* Thought Form */
+.thoughtForm {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 10;
+
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.thoughtForm .form-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.thoughtForm button {
+  width: 56px;
+  flex-shrink: 0;
+  font-size: 20px;
+}
