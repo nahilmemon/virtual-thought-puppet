@@ -31,16 +31,27 @@ socket.on('connect', () => {
 thoughtForm.addEventListener("submit", (event) => {
   event.preventDefault();
   // Retrieve text from thought input text field
-  let currentThought = thoughtInput.value;
+  let currentThought = thoughtInput.value.trim();
   console.log(currentThought);
+
+  // If the thought text input is empty, then abort mission immediately
+  if (!currentThought) {
+    return;
+  }
 
   // Clear thought input text field
   thoughtInput.value = "";
 
   // Create properly formatted thought object to send to server
   let thoughtObject = {
+    // Create a unique id for the thought object
+    id: crypto.randomUUID(),
+
+    // Text content
     text: currentThought,
-    username: "anonymous user",
+
+    // Author of the thought
+    username: "anonymous user",    
 
     // Random positions (since every client might have different window
     // widths and heights, store these as a fraction instead)
@@ -53,7 +64,7 @@ thoughtForm.addEventListener("submit", (event) => {
     // Random font size.
     fontSize: random(16, 32),
 
-    // White paper.
+    // Text color
     color: "#000000"
   };
 

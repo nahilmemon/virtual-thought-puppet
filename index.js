@@ -28,7 +28,6 @@ io.on("connection", (socket) => {
 
     // 3. share the new thought to everyone else
     io.emit("newThought", incomingData);
-    // Note: could do broadcast instead (sends it to everyone except the client who first sent this piece of data)
   });
 
   // Listens for the client to disconnect
