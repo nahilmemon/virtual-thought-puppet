@@ -6,42 +6,155 @@ body {
   overflow: hidden;
 }
 
-/* Navigation buttons */
-.button-circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
+#theaterBody {
+  display: flex;
+  flex-direction: column;
 }
 
+/* Navigation */
+#theaterNav {
+  width: 100%;
+  flex-shrink: 0; /* always maintain original height */
+}
+
+/* Navigation buttons */
+.button-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  padding: 0;
+
+  /* To center the contents of the buttons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Theater Row (Stage + Audience) */
+#theaterRow {
+  flex: 1; /* take up remaining height on screen */
+  width: 100%;
+  margin: 0;
+
+  display: flex;
+  min-height: 0; /* allows contents to shrink below min height (to let chat sidebar be scrollable) */
+}
+
+/* Main Stage Column (Header + Stage Deck + Thought Form) */
+#stageMain {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 12px;
+}
+
+/* Stage Deck Section */
+#stageDeckSection {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* p5 Canvas */
+#stageDeckSection canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Thought Form */
+#thoughtForm {
+  display: flex;
+  gap: 8px;
+}
+
+#thoughtInput {
+  flex: 1;
+  min-width: 0; /* shrink the input of instead of making it overflow is space is tight */
+  height: 40px;
+}
+
+#submitThoughtButton {
+  height: 40px;
+}
+
+/* Audience Chat Sidebar */
+#audienceChatSidebar {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  padding-right: 0;
+}
+
+#chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#chatHeading {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+#chatInterface {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* On desktop (md+) devices, hide the chat and grow the stage to full width */
+@media (min-width: 768px) {
+  #theaterRow.chat-hidden #audienceChatSidebar {
+    display: none;
+  }
+
+  #theaterRow.chat-hidden #stageMain {
+    flex: 0 0 100%; /* expand to full width available, not more or less */
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+
+
+
+
 /* p5 canvas */
-canvas {
+/* canvas {
   position: fixed;
   z-index: -10;
   display: block;
   top: 0;
   left: 0;
+} */
+
+/* Figuring out layout */
+#theaterRow {
+  background-color: brown;
 }
 
-/* Thought Form */
-.thoughtForm {
-  position: fixed;
-  bottom: 24px;
-  left: 24px;
-  right: 24px;
-  z-index: 10;
-
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
+#stageMain {
+  background-color: rgb(243, 83, 83);
 }
 
-.thoughtForm .form-control {
-  flex: 1;
-  min-width: 0;
+#stageDeckSection {
+  background-color: rgb(243, 168, 83);
 }
 
-.thoughtForm button {
-  width: 56px;
-  flex-shrink: 0;
-  font-size: 20px;
+#thoughtForm {
+  background-color: rgb(198, 243, 83);
+}
+
+#audienceChatSidebar {
+  background-color: rgb(83, 243, 238);
+}
+
+#chatInterface {
+  background-color: rgb(243, 83, 232);
 }

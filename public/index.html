@@ -20,47 +20,109 @@
   <!-- p5.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.js"></script>
 </head>
-<body class="m-4">
-  <!-- <nav class="navbar navbar-dark fixed-top bg-dark">
+<body id="theaterBody" class="">
+  <nav id="theaterNav" class="navbar navbar-dark bg-dark">
     <div class="container-fluid justify-content-end gap-2" id="navbarCollapse">
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav flex-row align-items-center gap-2">
         <li class="nav-item">
-          <button id="downloadButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">D</button>
+          <button 
+            id="downloadButton" 
+            class="btn btn-danger button-circle" 
+            type="button"
+            aria-label="Download screenshot">D</button>
         </li>
         <li class="nav-item">
-          <button id="settingsButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">S</button>
+          <button 
+            id="settingsButton" 
+            class="btn btn-danger button-circle" 
+            type="button"
+            aria-label="Open settings">S</button>
         </li>
         <li class="nav-item">
-          <button id="homepageButton" class="btn btn-danger my-2 my-sm-0 mx-2 button-circle" type="button">H</button>
+          <button 
+            id="homepageButton" 
+            class="btn btn-danger button-circle" 
+            type="button"
+            aria-label="Navigate to homepage">H</button>
+        </li>
+        <li class="nav-item">
+          <button
+            id="toggleChatButton"
+            class="btn btn-danger button-circle"
+            type="button"
+            aria-label="Hide chat"
+            aria-controls="audienceChatSidebar"
+            aria-expanded="true">C</button>
         </li>
       </ul>
     </div>
-  </nav> -->
+  </nav>
 
-  <header class="stage-header">
-    <h1>Puppet Stage</h1>
-  </header>
+  <div id="theaterRow" class="row">
+    <!-- Main Stage -->
+    <main id="stageMain" class="col-12 col-md-9">
+      <!-- Performance Title -->
+      <header id="stageHeader">
+        <h1>Default Performance Title</h1>
+      </header>
 
-  <main role="main" class="container-fluid p-0">
-    <!-- Expect the p5 canvas to go here -->
+      <!-- Stage Deck - where the puppet(s) will be visualized -->
+      <section id="stageDeckSection">
+        <!-- Expect the p5 canvas to go in here -->
+      </section>
 
-    <!-- Thought Form -->
-    <form id="thoughtForm" class="thoughtForm">
-      <!-- Thought Input Text Field -->
-      <div class="form-group">
-        <!-- <label for="thoughtInput">Enter thought: </label> -->
+      <!-- Thought Form - Puppet Builder Controls -->
+      <form id="thoughtForm" class="thoughtForm">
+        <!-- Thought Input Text Field -->
         <input 
-          type="text" 
+          type="text"
           id="thoughtInput" 
           class="form-control" 
           maxlength="24"
-          aria-describedby="thoughtInput" 
+          aria-label="Enter a thought"
           placeholder="Enter thought">
+
+        <!-- Submit Thought Button -->
+        <button type="submit" id="submitThoughtButton" class="btn btn-danger">></button>
+      </form>
+    </main>
+
+    <!-- Chat Sidebar - Audience -->
+    <aside id="audienceChatSidebar" 
+      class="col-12 col-md-3 offcanvas-md offcanvas-end"
+      tabindex="-1"
+      aria-labelledby="chatHeading">
+      <header id="chatHeader" class="">
+        <!-- Chat Heading -->
+        <h2 id="chatHeading">Chat</h2>
+
+        <!-- Hide Chat Button -->
+        <button
+          id="hideChatButton"
+          type="button"
+          class="btn-close d-md-none"
+          aria-label="Hide chat"
+          data-bs-dismiss="offcanvas"
+          data-bs-target="#audienceChatSidebar"></button>
+      </header>
+      <div id="chatInterface" class="">
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
+        <p>Chat contents in here</p>
       </div>
-      <!-- Submit Thought Button -->
-      <button type="submit" id="submitThoughtButton" class="btn btn-danger">></button>
-    </form>
-  </main>
+    </aside>
+  </div>
+  
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
