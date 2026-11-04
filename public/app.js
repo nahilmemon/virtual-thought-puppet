@@ -16,6 +16,11 @@ let socket = io();
 // To store all the thoughts received from the server
 let thoughts = [];
 
+// Connections
+let connections = [];
+let firstSelectedThought = null;
+let secondSelectedThought = null;
+
 // To control each thought
 let currentlyClickedThought = null;
 // To store the distance between the mouse's position and the center of the 
@@ -60,16 +65,6 @@ function setup() {
   textFont("Kalam");
 }
 
-// function draw() {
-//   // Clear the background
-//   background("#ffdfdf");
-
-//   // Draw out all the thoughts
-//   drawThoughts();
-// }
-
-// Mouse click event
-
 function draw() {
   // Clear the background
   background(bgColor);
@@ -85,8 +80,83 @@ function draw() {
   drawThoughts();
 }
 
-
 function mousePressed() {
+
+  // SHIFT + LEFT CLICK: Create a connection
+  if (event.shiftKey) {
+
+    console.log("Shift click detected!");
+
+    // Find which thought was clicked
+    for (let i = thoughts.length - 1; i >= 0; i--) {
+
+      let thought = thoughts[i];
+
+      let x = thought.x * width;
+      let y = thought.y * height;
+
+      textSize(thought.fontSize);
+
+      let thoughtWidth = textWidth(thought.text);
+      let thoughtHeight = thought.fontSize;
+
+      // Check whether the mouse is inside the thought
+      if (
+        mouseX > x - thoughtWidth / 2 &&
+        mouseX < x + thoughtWidth / 2 &&
+        mouseY > y - thoughtHeight / 2 &&
+        mouseY < y + thoughtHeight / 2
+      ) {
+
+        if (firstSelectedThought === null) {
+
+          firstSelectedThought = thought;
+          console.log("First thought selected!");
+
+        } else {
+
+          // Check if a connection already exists between these thoughts
+          let existingConnectionIndex = connections.findIndex(connection =>
+            (connection.firstId === firstSelectedThought.id &&
+            connection.secondId === thought.id) ||
+
+            (connection.firstId === thought.id &&
+            connection.secondId === firstSelectedThought.id)
+          );
+
+
+          // If the connection already exists, delete it
+          if (existingConnectionIndex !== -1) {
+
+            connections.splice(existingConnectionIndex, 1);
+
+            console.log("Connection deleted!");
+
+          } else {
+
+            // Otherwise, create a new connection
+            connections.push({
+              firstId: firstSelectedThought.id,
+              secondId: thought.id
+            });
+
+            console.log("Connection created!");
+          }
+
+          // Reset selection
+          firstSelectedThought = null;
+        }
+
+        break;
+      }
+    }
+
+    return false;
+  }
+
+  // ===== ORIGINAL LEFT-CLICK DRAGGING CODE =====
+
+  // ===== LEFT CLICK ===== //
   // Some thoughts might be layered on top of each other. So iterate over the 
   // thoughts array backwards so that we can focus on the top-most thought
   // that was clicked upon
@@ -229,8 +299,21 @@ thoughtForm.addEventListener("submit", (event) => {
 
 // 4. Listening for data from the server - on getting "newThought" --> log message
 socket.on("newThought", (incomingData) => {
+
   console.log(incomingData);
-  // Save new thought inside local thoughts array
+
+  // Connect the previous thought to the new thought
+  if (thoughts.length > 0) {
+
+    let previousThought = thoughts[thoughts.length - 1];
+
+    connections.push({
+      firstId: previousThought.id,
+      secondId: incomingData.id
+    });
+  }
+
+  // Save the new thought inside local thoughts array
   thoughts.push(incomingData);
 });
 
@@ -251,27 +334,59 @@ socket.on("thoughtMoved", (incomingThoughtData) => {
 });
 
 // Draw a line connecting previous thought to next thought
+// function drawThoughtConnections() {
+//   // Set the appearance of the connections
+//   stroke(textColor);
+//   strokeWeight(1.5);
+
+//   // Connect each thought to the next thought
+//   for (let thoughtIndex = 0; thoughtIndex < thoughts.length - 1; thoughtIndex++) {
+//     const currentThought = thoughts[thoughtIndex];
+//     const nextThought = thoughts[thoughtIndex + 1];
+
+//     // Convert fractional positions into canvas coordinates
+//     const x1 = currentThought.x * width;
+//     const y1 = currentThought.y * height;
+
+//     const x2 = nextThought.x * width;
+//     const y2 = nextThought.y * height;
+
+//     // Draw the connection
+//     line(x1, y1, x2, y2);
+//   }
+// }
+
 function drawThoughtConnections() {
-  // Set the appearance of the connections
+
   stroke(textColor);
   strokeWeight(1.5);
 
-  // Connect each thought to the next thought
-  for (let thoughtIndex = 0; thoughtIndex < thoughts.length - 1; thoughtIndex++) {
-    const currentThought = thoughts[thoughtIndex];
-    const nextThought = thoughts[thoughtIndex + 1];
+  // Draw every connection
+  for (let connection of connections) {
 
-    // Convert fractional positions into canvas coordinates
-    const x1 = currentThought.x * width;
-    const y1 = currentThought.y * height;
+    let firstThought = thoughts.find(
+      thought => thought.id === connection.firstId
+    );
 
-    const x2 = nextThought.x * width;
-    const y2 = nextThought.y * height;
+    let secondThought = thoughts.find(
+      thought => thought.id === connection.secondId
+    );
 
-    // Draw the connection
-    line(x1, y1, x2, y2);
+    if (firstThought && secondThought) {
+
+      line(
+        firstThought.x * width,
+        firstThought.y * height,
+        secondThought.x * width,
+        secondThought.y * height
+      );
+    }
   }
 }
+
+stageDeckSection.addEventListener("contextmenu", (event) => {
+  event.preventDefault();
+});
 
 
 function drawThoughts() {
