@@ -78,6 +78,9 @@ function draw() {
   // that it can't move outside the bounds of the canvas
   boundMovingThought();
 
+  // Draw all the lines connecting the thoughts together
+  drawThoughtConnections();
+
   // Draw out all the thoughts
   drawThoughts();
 }
@@ -246,6 +249,30 @@ socket.on("thoughtMoved", (incomingThoughtData) => {
     thoughtToUpdate.y = incomingThoughtData.y;
   }
 });
+
+// Draw a line connecting previous thought to next thought
+function drawThoughtConnections() {
+  // Set the appearance of the connections
+  stroke(textColor);
+  strokeWeight(1.5);
+
+  // Connect each thought to the next thought
+  for (let thoughtIndex = 0; thoughtIndex < thoughts.length - 1; thoughtIndex++) {
+    const currentThought = thoughts[thoughtIndex];
+    const nextThought = thoughts[thoughtIndex + 1];
+
+    // Convert fractional positions into canvas coordinates
+    const x1 = currentThought.x * width;
+    const y1 = currentThought.y * height;
+
+    const x2 = nextThought.x * width;
+    const y2 = nextThought.y * height;
+
+    // Draw the connection
+    line(x1, y1, x2, y2);
+  }
+}
+
 
 function drawThoughts() {
   // To store if the mouse is currently hovering any thought in particular
