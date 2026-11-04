@@ -11,6 +11,13 @@ let socket = io();
 // To store all the thoughts received from the server
 let thoughts = [];
 
+// To control each thought
+let currentlyClickedThought = null;
+// To store the distance between the mouse's position and the center of the 
+// thought's text content
+let distanceBetweenMouseAndThoughtCenterX = 0;
+let distanceBetweenMouseAndThoughtCenterY = 0;
+
 // Stage Deck
 const stageDeckSection = document.querySelector("#stageDeckSection");
 let stageDeckWidth;
@@ -48,11 +55,112 @@ function setup() {
   textFont("Kalam");
 }
 
+// function draw() {
+//   // Clear the background
+//   background("#ffdfdf");
+
+//   // Draw out all the thoughts
+//   drawThoughts();
+// }
+
+// Mouse click event
+
 function draw() {
   // Clear the background
   background("#ffdfdf");
+
+  // Make sure that if the user clicks and drags a thought around
+  // that it can't move outside the bounds of the canvas
+  boundMovingThought();
+
   // Draw out all the thoughts
   drawThoughts();
+}
+
+
+function mousePressed() {
+  // Some thoughts might be layered on top of each other. So iterate over the 
+  // thoughts array backwards so that we can focus on the top-most thought
+  // that was clicked upon
+  for (let thoughtIndex = thoughts.length - 1; thoughtIndex >= 0; thoughtIndex--) {
+    // Get the properties of the current thought in the thoughts array
+    let currentThought = thoughts[thoughtIndex];
+
+    // Calculate the position of the current thought in pixels instead of as 
+    // a fraction of the canvas dimensions. Note: this is based on the center 
+    // point of the thought's text content
+    const currentThoughtXPos = currentThought.x * width;
+    const currentThoughtYPos = currentThought.y * height;
+
+    // Calculate the size of the current thought's bounding text box
+    textSize(currentThought.fontSize);
+    let currentThoughtWidth = textWidth(currentThought.text);
+    let currentThoughtHeight = currentThought.fontSize;
+
+    // Calculate the positions of the edges of this bounding box
+    let leftEdgeXPos   = currentThoughtXPos - (currentThoughtWidth / 2);
+    let rightEdgeXPos  = currentThoughtXPos + (currentThoughtWidth / 2);
+    let topEdgeYPos    = currentThoughtYPos - (currentThoughtHeight / 2);
+    let bottomEdgeYPos = currentThoughtYPos + (currentThoughtHeight / 2);
+
+    // Check if the mouse cursor is currently positioned within this bounding 
+    // box
+    if (mouseX > leftEdgeXPos && mouseX < rightEdgeXPos && mouseY > topEdgeYPos && mouseY < bottomEdgeYPos) {
+      // Update the currently clicked thought to the current thought
+      currentlyClickedThought = currentThought;
+      
+      // Calculate and remember where the mouse is clicking in relation to 
+      // the center of the currently clicked thought
+      distanceBetweenMouseAndThoughtCenterX = currentThoughtXPos - mouseX;
+      distanceBetweenMouseAndThoughtCenterY = currentThoughtYPos - mouseY;
+      
+      break;
+    }
+  }
+}
+
+// Make sure that if the user clicks and drags a thought around
+// that it can't move outside the bounds of the canvas
+function boundMovingThought() {
+  // If the user is currently holding onto a thought while dragging the mouse,
+  // then double check that they are not trying to drag the thought outside
+  // the bounds of the canvas
+  if (currentlyClickedThought) {
+    // Calculate the new x and y pos of the currently clicked on thought
+    let newXPos = mouseX + distanceBetweenMouseAndThoughtCenterX;
+    let newYPos = mouseY + distanceBetweenMouseAndThoughtCenterY;
+
+    // Calculate the size of the current thought's bounding text box
+    textSize(currentlyClickedThought.fontSize);
+    let thoughtWidth = textWidth(currentlyClickedThought.text);
+    let thoughtHeight = currentlyClickedThought.fontSize;
+
+    // Constrain the new x and y pos of the currently clicked on thought
+    // to within the bounds of the canvas, taking into consideration the 
+    // dimensions of the bounding box of this thought
+    let newXPosConstrained = constrain(newXPos, thoughtWidth / 2, width - (thoughtWidth / 2));
+    let newYPosConstrained = constrain(newYPos, thoughtHeight / 2, height - (thoughtHeight / 2));
+
+    // Update the x and y pos of the currently clicked thought as a fraction
+    // of the width and height of the canvas
+    currentlyClickedThought.x = newXPosConstrained / width;
+    currentlyClickedThought.y = newYPosConstrained / height;
+
+    // Send the updated position of the currently clicked thought to the server so that other clients can see the thought move
+    socket.emit("moveThought", {
+      id: currentlyClickedThought.id,
+      x: currentlyClickedThought.x,
+      y: currentlyClickedThought.y
+    });
+  }
+}
+
+// Listen for when the user stops pressing their mouse
+function mouseReleased() {
+  // When the mouse is released, the user has let go of which thought they
+  // are currently clicking on, so update the currently clicked thought 
+  // accordingly
+  currentlyClickedThought = null;
 }
 
 // Get dimensions of the stageDeckSection
@@ -98,7 +206,7 @@ thoughtForm.addEventListener("submit", (event) => {
     y: random(0.15, 0.8),
 
     // Random rotation in degrees
-    rotation: random(-30, 30),
+    rotation: 0, // random(-30, 30),
 
     // Random font size.
     fontSize: random(16, 32),
@@ -118,8 +226,27 @@ socket.on("newThought", (incomingData) => {
   thoughts.push(incomingData);
 });
 
+// Listen to the server for updates on whether another client moved a 
+// thought's position
+socket.on("thoughtMoved", (incomingThoughtData) => {
+  // By using the incoming thought's id, find the matching thought in the 
+  // local thoughts array stored on the server
+  let thoughtToUpdate = thoughts.find(thought => thought.id === incomingThoughtData.id);
+  
+  // If the desired thought was found
+  if (thoughtToUpdate) {
+    // then update its thought with the new position based on the incoming 
+    // thought data
+    thoughtToUpdate.x = incomingThoughtData.x;
+    thoughtToUpdate.y = incomingThoughtData.y;
+  }
+});
+
 function drawThoughts() {
-  // Draw every thought in our array.
+  // To store if the mouse is currently hovering any thought in particular
+  let isMouseHoveringOverAnyThought = false;
+
+  // Draw every thought in the thoughts array
   thoughts.forEach(function (thought) {
     push();
 
@@ -129,7 +256,7 @@ function drawThoughts() {
 
     // Move and rotate the drawing coordinate system
     translate(x, y);
-    rotate(thought.rotation);
+    // rotate(thought.rotation);
 
     // Set the thought's appearance
     textSize(thought.fontSize);
@@ -140,8 +267,33 @@ function drawThoughts() {
     // Draw the text
     text(thought.text, 0, 0);
 
+    // To determine if the user is hovering over any thought,
+    // first get the width and height of the bouding text box for this thought
+    let thoughtWidth = textWidth(thought.text);
+    let thoughtHeight = thought.fontSize;
+
+    // Then calculate the positions of the edges of this bounding box
+    let leftEdgeXPos   = x - (thoughtWidth / 2);
+    let rightEdgeXPos  = x + (thoughtWidth / 2);
+    let topEdgeYPos    = y - (thoughtHeight / 2);
+    let bottomEdgeYPos = y + (thoughtHeight / 2);
+
+    // Finally, check if the mouse cursor is currently positioned within this 
+    // bounding box
+    if (mouseX > leftEdgeXPos && mouseX < rightEdgeXPos && mouseY > topEdgeYPos && mouseY < bottomEdgeYPos) {
+      isMouseHoveringOverAnyThought = true;
+    }
+
     pop();
   });
+
+  // If any the mouse is indeed hovering over or clicking any thought 
+  // then show the hand icon, otherwise, show the arrow icon for the mouse
+  if (isMouseHoveringOverAnyThought || currentlyClickedThought) {
+    cursor(HAND);
+  } else {
+    cursor(ARROW);
+  }
 }
 
 // For the toggleChatButton in the nav, change the aria-label and 

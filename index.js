@@ -30,6 +30,14 @@ io.on("connection", (socket) => {
     io.emit("newThought", incomingData);
   });
 
+  // Listen for when a client has moved a thought's position
+  socket.on("moveThought", (incomingThoughtData) => {
+    // Then broadcast this thought and its new position to all the other 
+    // clients except itself
+    socket.broadcast.emit("thoughtMoved", incomingThoughtData);
+  });
+
+
   // Listens for the client to disconnect
   socket.on("disconnect", () => {
     console.log(`A client disconnected at ID: ${socket.id}`);
