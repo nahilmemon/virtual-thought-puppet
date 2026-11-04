@@ -1,3 +1,8 @@
+// Retrieve CSS color variables
+const cssVariables = getComputedStyle(document.documentElement);
+const bgColor = cssVariables.getPropertyValue("--bg-color").trim();
+const textColor = cssVariables.getPropertyValue("--text-color").trim();
+
 // Retrieve document elements
 const theaterRow = document.querySelector("#theaterRow");
 const toggleChatButton = document.querySelector("#toggleChatButton");
@@ -67,7 +72,7 @@ function setup() {
 
 function draw() {
   // Clear the background
-  background("#ffdfdf");
+  background(bgColor);
 
   // Make sure that if the user clicks and drags a thought around
   // that it can't move outside the bounds of the canvas
@@ -212,7 +217,7 @@ thoughtForm.addEventListener("submit", (event) => {
     fontSize: random(16, 32),
 
     // Text color
-    color: "#000000"
+    color: textColor
   };
 
   //1. Send thought data to server

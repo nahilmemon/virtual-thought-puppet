@@ -1,9 +1,21 @@
+:root {
+  --bg-color: #000000;     
+  --text-color: #ab88f6;  
+  --button-bg-color: #886be5; 
+  --button-darker-bg-color: #6d50c7;
+}
+
 html,
 body {
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 #theaterBody {
@@ -15,6 +27,7 @@ body {
 #theaterNav {
   width: 100%;
   flex-shrink: 0; /* always maintain original height */
+  background-color: var(--bg-color) !important;
 }
 
 /* Navigation buttons */
@@ -23,11 +36,33 @@ body {
   height: 40px;
   border-radius: 100%;
   padding: 0;
+  background-color: var(--text-color);
+  border: 2px solid var(--button-bg-color);
+  color: var(--bg-color);
 
   /* To center the contents of the buttons */
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button-circle:hover {
+  background-color: var(--button-bg-color);
+  border-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+.button-circle:active {
+  background-color: #6d50c7 !important;
+  border-color: var(--text-color) !important;
+}
+
+.button-circle:focus-visible {
+  outline: 3px solid var(--text-color);
+  outline-offset: 3px;
+  box-shadow: none;
+  background-color: var(--button-darker-bg-color) !important;
+  border-color: var(--text-color) !important;
 }
 
 /* Theater Row (Stage + Audience) */
@@ -47,6 +82,12 @@ body {
   flex: 1;
   min-height: 0;
   padding-bottom: 12px;
+}
+
+/* Stage Heading */
+#stageHeading {
+  font-weight: 700;
+  color: var(--button-bg-color);
 }
 
 /* Stage Deck Section */
@@ -88,7 +129,10 @@ body {
   flex-direction: column;
   min-height: 0;
 
-  padding-right: 0;
+  padding: 12px;
+  margin-top: 12p;
+  background-color: var(--button-bg-color) !important;
+  color: var(--bg-color);
 }
 
 #chatHeader {
@@ -100,6 +144,7 @@ body {
 #chatHeading {
   margin: 0;
   font-size: 1.25rem;
+  font-weight: 700;
 }
 
 #chatInterface {
@@ -135,7 +180,7 @@ body {
 } */
 
 /* Figuring out layout */
-#theaterRow {
+/* #theaterRow {
   background-color: brown;
 }
 
@@ -157,4 +202,4 @@ body {
 
 #chatInterface {
   background-color: rgb(243, 83, 232);
-}
+} */
