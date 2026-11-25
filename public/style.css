@@ -1,3 +1,4 @@
+/* === Theme Variables === */
 :root {
   --bg-color: #000000;     
   --text-color: #ab88f6;  
@@ -5,12 +6,15 @@
   --button-darker-bg-color: #6d50c7;
 }
 
+/* === Global Properties === */
 html,
 body {
+  /* Make the page fill the full viewport without scrollbars */
   width: 100%;
   height: 100%;
   margin: 0;
   overflow: hidden;
+  /* Apply theme settings */
   font-family: "Kalam", cursive;
   font-weight: 400;
   font-style: normal;
@@ -18,24 +22,39 @@ body {
   color: var(--text-color);
 }
 
+/* === Puppet Stage Page: Overall Layout === */
+/* Mobile-First Layout Approach */
 #theaterBody {
   display: flex;
   flex-direction: column;
 }
 
-/* Navigation */
+/* Theater Row (Stage + Audience) */
+#theaterRow {
+  flex: 1; /* Take up remaining height on screen below navbar */
+  width: 100%;
+  margin: 0;
+
+  display: flex;
+  /* Allows inner contents to shrink below min height (to let chat sidebar be 
+  scrollable) */
+  min-height: 0; 
+}
+
+/* === Navigation === */
 #theaterNav {
   width: 100%;
-  flex-shrink: 0; /* always maintain original height */
+  flex-shrink: 0; /* Always maintain original height, even if space is tight */
   background-color: var(--bg-color) !important;
 }
 
-/* Navigation buttons */
+/* Circular navigation buttons */
 .button-circle {
   width: 40px;
   height: 40px;
   border-radius: 100%;
   padding: 0;
+
   background-color: var(--text-color);
   border: 2px solid var(--button-bg-color);
   color: var(--bg-color);
@@ -46,17 +65,20 @@ body {
   justify-content: center;
 }
 
+/* Swap background and border colors on hover */
 .button-circle:hover {
   background-color: var(--button-bg-color);
   border-color: var(--text-color);
   color: var(--bg-color);
 }
 
+/* Darken button background while actively pressed */
 .button-circle:active {
-  background-color: #6d50c7 !important;
+  background-color: var(--button-darker-bg-color) !important;
   border-color: var(--text-color) !important;
 }
 
+/* Style focus ring for keyboard navigation */
 .button-circle:focus-visible {
   outline: 3px solid var(--text-color);
   outline-offset: 3px;
@@ -65,17 +87,7 @@ body {
   border-color: var(--text-color) !important;
 }
 
-/* Theater Row (Stage + Audience) */
-#theaterRow {
-  flex: 1; /* take up remaining height on screen */
-  width: 100%;
-  margin: 0;
-
-  display: flex;
-  min-height: 0; /* allows contents to shrink below min height (to let chat sidebar be scrollable) */
-}
-
-/* Main Stage Column (Header + Stage Deck + Thought Form) */
+/* === Main Stage Column (Header + Stage Deck + Thought Form) === */
 #stageMain {
   display: flex;
   flex-direction: column;
@@ -84,13 +96,12 @@ body {
   padding-bottom: 12px;
 }
 
-/* Stage Heading */
 #stageHeading {
   font-weight: 700;
   color: var(--button-bg-color);
 }
 
-/* Stage Deck Section */
+/* Parent Wrapper Container for p5 Canvas */
 #stageDeckSection {
   flex: 1;
   min-height: 0;
@@ -98,14 +109,14 @@ body {
   overflow: hidden;
 }
 
-/* p5 Canvas */
+/* Make p5 Canvas fill up entire parent container */
 #stageDeckSection canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-/* Thought Form */
+/* Thought Submission Form at bottom of screen */
 #thoughtForm {
   display: flex;
   gap: 8px;
@@ -113,7 +124,9 @@ body {
 
 #thoughtInput {
   flex: 1;
-  min-width: 0; /* shrink the input of instead of making it overflow is space is tight */
+  /* Shrink the input on small screens, instead of making it overflow, if space 
+  is tight */
+  min-width: 0; 
   height: 40px;
 }
 
@@ -121,16 +134,14 @@ body {
   height: 40px;
 }
 
-/* Audience Chat Sidebar */
+/* === Audience Chat Sidebar === */
 #audienceChatSidebar {
   height: 100%;
-
   display: flex;
   flex-direction: column;
   min-height: 0;
 
   padding: 12px;
-  margin-top: 12p;
   background-color: var(--button-bg-color) !important;
   color: var(--bg-color);
 }
@@ -147,13 +158,16 @@ body {
   font-weight: 700;
 }
 
+/* Scrollable container for the chat messages */
 #chatInterface {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
 }
 
-/* On desktop (md+) devices, hide the chat and grow the stage to full width */
+/* === Desktop View (md+) === */
+/* On desktop (md+) devices, hide the chat sidebar and grow the stage to full 
+width */
 @media (min-width: 768px) {
   #theaterRow.chat-hidden #audienceChatSidebar {
     display: none;
@@ -165,41 +179,3 @@ body {
     max-width: 100%;
   }
 }
-
-
-
-
-
-/* p5 canvas */
-/* canvas {
-  position: fixed;
-  z-index: -10;
-  display: block;
-  top: 0;
-  left: 0;
-} */
-
-/* Figuring out layout */
-/* #theaterRow {
-  background-color: brown;
-}
-
-#stageMain {
-  background-color: rgb(243, 83, 83);
-}
-
-#stageDeckSection {
-  background-color: rgb(243, 168, 83);
-}
-
-#thoughtForm {
-  background-color: rgb(198, 243, 83);
-}
-
-#audienceChatSidebar {
-  background-color: rgb(83, 243, 238);
-}
-
-#chatInterface {
-  background-color: rgb(243, 83, 232);
-} */
